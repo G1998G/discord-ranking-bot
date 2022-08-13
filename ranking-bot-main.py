@@ -101,7 +101,7 @@ class Basic(commands.Cog):
         await ctx.channel.send(f'{self.ranking_message(ctx.guild.id)}')  
 
     # 書き込み数ランキングの自動発表
-    @tasks.loop(seconds=10)
+    @tasks.loop(seconds=60)
     async def loop(self):
         # 現在の時刻
         now = datetime.now().strftime('%H:%M')
@@ -185,7 +185,7 @@ class EmojiRanking(commands.Cog):
         await ctx.channel.send(f'{self.ranking_message(ctx.guild.id)}')  
 
     # 書き込み数ランキングの自動発表
-    @tasks.loop(seconds=10)
+    @tasks.loop(seconds=60)
     async def loop(self):
         # 現在の時刻
         now = datetime.now().strftime('%H:%M')
