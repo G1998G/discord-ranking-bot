@@ -21,7 +21,7 @@ class Basic(commands.Cog):
         self.gd = dict()
 
     def ranking_message(self,guild_id):
-        ranking_message = '今日の書き込み数ランキング✨\n'
+        ranking_message = '>>> ✨今日の書き込み数ランキング✨\n'
         if guild_id in self.gd:
             c = collections.Counter(self.gd[guild_id]).most_common()
 
@@ -47,11 +47,9 @@ class Basic(commands.Cog):
                     ranking_message += f'{ranking_count}位:{user.display_name}, {number}回\n'
 
             ranking_message += f'総書き込みユーザー数:{len(set( self.gd[guild_id] ) )}名、総書き込み数：{len(self.gd[guild_id])}回'
-            ranking_message = '>>> ' + ranking_message
-
             return ranking_message
         else:
-            return f'>>> {ranking_message}書き込み数計測不能(もしくは書き込み無し)'
+            return f'{ranking_message}書き込み数計測不能(もしくは書き込み無し)'
 
     @commands.Cog.listener()
     async def on_message(self,msg):
@@ -65,8 +63,8 @@ class Basic(commands.Cog):
         else:
             self.gd[msg.guild.id] = [msg.author.id]
 
-    @commands.command(name='myrank')
-    async def _myrank(self,ctx,*arg):
+    @commands.command()
+    async def myrank(self,ctx,*arg):
         '''
         あなたの書き込み数・ranking表示
         '''
@@ -93,8 +91,8 @@ class Basic(commands.Cog):
         else:
             await ctx.send('>>> 書き込み0もしくはコマンドのみ書き込み')
 
-    @commands.command(name='ranking')
-    async def _ranking(self,ctx,*arg):
+    @commands.command()
+    async def ranking(self,ctx,*arg):
         '''
         本日0:00以降の書き込み数ranking表示
         '''
@@ -119,7 +117,7 @@ class Basic(commands.Cog):
                 # システムメッセージチャンネルが設定されていない場合、ランダムなテキストチャンネルに投稿            
                 elif guild.text_channels:
                     channel = random.choice(guild.text_channels)
-                    await channel.send(f'{self.ranking_message(guild.id)}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n>>>  指定するにはチャンネルで {bot.command_prefix}rksと書き込んで下さい。')
+                    await channel.send(f'{self.ranking_message(guild.id)}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rksと書き込んで下さい。')
             self.gd.clear()
 
 class EmojiRanking(commands.Cog):
@@ -133,7 +131,7 @@ class EmojiRanking(commands.Cog):
         self.loop.start()
 
     def ranking_message(self,guild_id):
-        ranking_message = '>>> 今日の絵文字書き込み数ランキング✨\n'
+        ranking_message = '>>> 🌟今日の絵文字書き込み数ランキング🌟\n'
         if guild_id in self.emoji_gd:
             c = collections.Counter(self.emoji_gd[guild_id]).most_common()
 
@@ -154,12 +152,12 @@ class EmojiRanking(commands.Cog):
                     if prenumber == number:
                         ranking_count -= 1
                     prenumber = number
-                    ranking_message += f'`{ranking_count}位:` {emoji} `:, {number}回`\n'
+                    ranking_message += f'{ranking_count}位:{emoji} :, {number}回 \n'
 
-            ranking_message += f'>>> 総書き込み絵文字数:{len(set( self.emoji_gd[guild_id] ) )}、総書き込み数：{len(self.emoji_gd[guild_id])}回'
+            ranking_message += f'総書き込み絵文字数:{len(set( self.emoji_gd[guild_id] ) )}、総書き込み数：{len(self.emoji_gd[guild_id])}回'
             return ranking_message
         else:
-            return f'{ranking_message}>>> 書き込み数計測不能(もしくは書き込み無し)'
+            return f'{ranking_message}書き込み数計測不能(もしくは書き込み無し)'
 
     @commands.Cog.listener()
     async def on_message(self,msg):
@@ -203,7 +201,7 @@ class EmojiRanking(commands.Cog):
                 # システムメッセージチャンネルが設定されていない場合、ランダムなテキストチャンネルに投稿            
                 elif guild.text_channels:
                     channel = random.choice(guild.text_channels)
-                    await channel.send(f'{self.ranking_message(guild.id)}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n >>> 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
+                    await channel.send(f'{self.ranking_message(guild.id)}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
             self.emoji_gd.clear()
 
 class Setting(commands.Cog):
@@ -214,8 +212,8 @@ class Setting(commands.Cog):
         super().__init__()
         self.bot = bot
 
-    @commands.command(name='rks')
-    async def _rks(self,ctx,*arg):
+    @commands.command()
+    async def rks(self,ctx,*arg):
         '''
         1日の書き込み数ランキング自動投稿先を設定する
         '''
@@ -231,7 +229,7 @@ class Omikuji(commands.Cog):
         super().__init__()
         self.bot = bot
 
-    @commands.command(name='omikuji')
+    @commands.command()
     async def omikuji(self,ctx,*arg):
         '''
         おまけ機能omikuji
