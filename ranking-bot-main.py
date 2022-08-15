@@ -103,21 +103,25 @@ class Basic(commands.Cog):
     async def loop(self):
         # 現在の時刻
         now = datetime.now().strftime('%H:%M')
-        if now == '23:59':
+        if now == '12:00' or now == '23:59':
             # botが入っているguildリスト
             guilds = [guild async for guild in bot.fetch_guilds(limit=200)]
             for guild in guilds:
+                ranking_message = self.ranking_message(guild.id)
+                if now == '12:00':
+                    ranking_message = '*🔻中間発表🔻* \n' + ranking_message
+                print(ranking_message)
                 # 自動投稿先が設定されている場合
                 if guild in ranking_message_channel_dict:
                     channel = ranking_message_channel_dict[guild]
-                    await channel.send(self.ranking_message(guild.id))
+                    await channel.send(ranking_message)
                 # 自動投稿先が設定されていない場合、システムメッセージチャンネルに送付
                 elif guild.system_channel:
-                    await guild.system_channel.send(self.ranking_message(guild.id))
+                    await guild.system_channel.send(ranking_message)
                 # システムメッセージチャンネルが設定されていない場合、ランダムなテキストチャンネルに投稿            
                 elif guild.text_channels:
                     channel = random.choice(guild.text_channels)
-                    await channel.send(f'{self.ranking_message(guild.id)}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rksと書き込んで下さい。')
+                    await channel.send(f'{ranking_message}\n 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
             self.gd.clear()
 
 class EmojiRanking(commands.Cog):
@@ -187,21 +191,25 @@ class EmojiRanking(commands.Cog):
     async def loop(self):
         # 現在の時刻
         now = datetime.now().strftime('%H:%M')
-        if now == '23:59':
+        if now == '12:00' or now == '23:59':
             # botが入っているguildリスト
             guilds = [guild async for guild in bot.fetch_guilds(limit=200)]
             for guild in guilds:
+                ranking_message = self.ranking_message(guild.id)
+                if now == '12:00':
+                    ranking_message = '*🔻中間発表🔻* \n' + ranking_message
+                print(ranking_message)
                 # 自動投稿先が設定されている場合
                 if guild in ranking_message_channel_dict:
                     channel = ranking_message_channel_dict[guild]
-                    await channel.send(self.ranking_message(guild.id))
+                    await channel.send(ranking_message)
                 # 自動投稿先が設定されていない場合、システムメッセージチャンネルに送付
                 elif guild.system_channel:
-                    await guild.system_channel.send(self.ranking_message(guild.id))
+                    await guild.system_channel.send(ranking_message)
                 # システムメッセージチャンネルが設定されていない場合、ランダムなテキストチャンネルに投稿            
                 elif guild.text_channels:
                     channel = random.choice(guild.text_channels)
-                    await channel.send(f'{self.ranking_message(guild.id)}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
+                    await channel.send(f'{ranking_message}\n 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
             self.emoji_gd.clear()
 
 class Setting(commands.Cog):
@@ -220,6 +228,14 @@ class Setting(commands.Cog):
         ranking_message_channel_dict[ctx.guild] = ctx.channel
         await ctx.send(f'>>> 設定: \n自動投稿の1日のランキング集計はこのチャンネルに投稿されます')
 
+    @commands.command()
+    async def profile(self,ctx,*args):
+        '''
+        bot作成者の紹介
+        '''
+        embed= discord.Embed(title="**bot作成者**", description=f"趣味でbot等を作っています。\n [GitHubプロフィールページ](https://github.com/G1998G)")
+        embed.set_thumbnail(url="https://avatars.githubusercontent.com/u/60283066?s=400&v=4")
+        await ctx.send(embed=embed)
 
 class Omikuji(commands.Cog):
     """
