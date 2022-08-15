@@ -281,7 +281,7 @@ class HelpCommand(commands.HelpCommand):
             for command in command_list:
                 content += f"{self.context.prefix}{command.name}  `{command.help}`\n"
             content += "\n"
-        embed = discord.Embed(title="**サボちゃんbot🌵**",description=f'サーバー内の書き込み数ランキングを表示するbotです。 \n コマンドの先頭には「{self.context.prefix}」を付けてください。')
+        embed = discord.Embed(title="**🌵ランキングbot🌵**",description=f'サーバー内の書き込み数ランキングを表示するbotです。 \n コマンドの先頭には「{self.context.prefix}」を付けてください。')
         embed = embed.add_field(name="**コマンドリスト**",value=content)
 
         await self.get_destination().send(embed=embed)
