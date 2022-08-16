@@ -122,8 +122,8 @@ class Basic(commands.Cog):
                 elif guild.text_channels:
                     channel = random.choice(guild.text_channels)
                     await channel.send(f'{ranking_message}\n 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
-                if now == '23;59':
-                    self.gd.clear()
+            if now == '23;59':
+                self.gd.clear()
 
 class EmojiRanking(commands.Cog):
     '''
@@ -211,8 +211,8 @@ class EmojiRanking(commands.Cog):
                 elif guild.text_channels:
                     channel = random.choice(guild.text_channels)
                     await channel.send(f'{ranking_message}\n 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
-                if now == '23:59':
-                    self.emoji_gd.clear()
+            if now == '23:59':
+                self.emoji_gd.clear()
 
 class Setting(commands.Cog):
     """
