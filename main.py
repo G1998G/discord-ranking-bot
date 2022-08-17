@@ -110,7 +110,8 @@ class Basic(commands.Cog):
                 ranking_message = self.ranking_message(guild.id)
                 if now == '12:00':
                     ranking_message = '*🔻中間発表🔻* \n' + ranking_message
-                print(ranking_message)
+                elif now == '23;59':
+                    self.gd.clear()
                 # 自動投稿先が設定されている場合
                 if guild in ranking_message_channel_dict:
                     channel = ranking_message_channel_dict[guild]
@@ -122,8 +123,7 @@ class Basic(commands.Cog):
                 elif guild.text_channels:
                     channel = random.choice(guild.text_channels)
                     await channel.send(f'{ranking_message}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
-            if now == '23;59':
-                self.gd.clear()
+
 
 class EmojiRanking(commands.Cog):
     '''
@@ -200,7 +200,8 @@ class EmojiRanking(commands.Cog):
                 ranking_message = self.ranking_message(guild.id)
                 if now == '12:00':
                     ranking_message = '*🔻中間発表🔻* \n' + ranking_message
-                print(ranking_message)
+                elif now == '23:59':
+                    self.emoji_gd.clear()
                 # 自動投稿先が設定されている場合
                 if guild in ranking_message_channel_dict:
                     channel = ranking_message_channel_dict[guild]
@@ -212,8 +213,6 @@ class EmojiRanking(commands.Cog):
                 elif guild.text_channels:
                     channel = random.choice(guild.text_channels)
                     await channel.send(f'{ranking_message}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
-            if now == '23:59':
-                self.emoji_gd.clear()
 
 class Setting(commands.Cog):
     """
