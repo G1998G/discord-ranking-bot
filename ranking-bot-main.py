@@ -21,7 +21,7 @@ class Basic(commands.Cog):
         self.gd = dict()
 
     def ranking_message(self,guild_id):
-        ranking_message = '>>> ✨今日の書き込み数ランキング✨\n'
+        ranking_message = '✨今日の書き込み数ランキング✨\n'
         if guild_id in self.gd:
             c = collections.Counter(self.gd[guild_id]).most_common()
 
@@ -87,7 +87,7 @@ class Basic(commands.Cog):
                         ranking_count -= 1
                     if user_id == ctx.author.id:
                         break
-                await ctx.channel.send(f'>>> {ctx.author.nick or ctx.author.name}:{message_count}回, {ranking_count} 位')
+                await ctx.channel.send(f'{ctx.author.nick or ctx.author.name}:{message_count}回, {ranking_count} 位')
         else:
             await ctx.send('>>> 書き込み0もしくはコマンドのみ書き込み')
 
@@ -121,7 +121,7 @@ class Basic(commands.Cog):
                 # システムメッセージチャンネルが設定されていない場合、ランダムなテキストチャンネルに投稿            
                 elif guild.text_channels:
                     channel = random.choice(guild.text_channels)
-                    await channel.send(f'{ranking_message}\n 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
+                    await channel.send(f'{ranking_message}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
             if now == '23;59':
                 self.gd.clear()
 
@@ -136,7 +136,7 @@ class EmojiRanking(commands.Cog):
         self.loop.start()
 
     def ranking_message(self,guild_id):
-        ranking_message = '>>> 🌟今日の絵文字書き込み数ランキング🌟\n'
+        ranking_message = '🌟今日の絵文字書き込み数ランキング🌟\n'
         if guild_id in self.emoji_gd:
             c = collections.Counter(self.emoji_gd[guild_id]).most_common()
 
@@ -169,9 +169,10 @@ class EmojiRanking(commands.Cog):
         # 自身の書き込みは無視
         if msg.author == bot.user:
             return
-        elif not msg.guild.id in self.emoji_gd.keys():
-            self.emoji_gd[msg.guild.id] = list()
+
         if re.findall(r'<:\w*:\d*>', msg.content):
+            if not msg.guild.id in self.emoji_gd.keys():
+                self.emoji_gd[msg.guild.id] = list()
             custom_emojis = re.findall(r'<:\w*:\d*>', msg.content)
             print(custom_emojis)
             for custom_emoji in custom_emojis:
@@ -210,7 +211,7 @@ class EmojiRanking(commands.Cog):
                 # システムメッセージチャンネルが設定されていない場合、ランダムなテキストチャンネルに投稿            
                 elif guild.text_channels:
                     channel = random.choice(guild.text_channels)
-                    await channel.send(f'{ranking_message}\n 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
+                    await channel.send(f'{ranking_message}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
             if now == '23:59':
                 self.emoji_gd.clear()
 
