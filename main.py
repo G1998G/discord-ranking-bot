@@ -111,7 +111,7 @@ class Basic(commands.Cog):
                 if now == '12:00':
                     ranking_message = '*🔻中間発表🔻* \n' + ranking_message
                 elif now == '23;59':
-                    self.gd.clear()
+                    del self.gd[guild.id]
                 # 自動投稿先が設定されている場合
                 if guild in ranking_message_channel_dict:
                     channel = ranking_message_channel_dict[guild]
@@ -201,7 +201,7 @@ class EmojiRanking(commands.Cog):
                 if now == '12:00':
                     ranking_message = '*🔻中間発表🔻* \n' + ranking_message
                 elif now == '23:59':
-                    self.emoji_gd.clear()
+                    del self.emoji_gd[guild.id]
                 # 自動投稿先が設定されている場合
                 if guild in ranking_message_channel_dict:
                     channel = ranking_message_channel_dict[guild]
