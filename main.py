@@ -4,7 +4,7 @@ from datetime import datetime
 from discord.ext import commands ,tasks
 import random
 import re
-
+import asyncio
 #guild ranking message 送付先
 ranking_message_channel_dict = dict()
 
@@ -17,8 +17,11 @@ class Basic(commands.Cog):
     def __init__(self, bot):
         super().__init__()
         self.bot = bot
-        self.loop.start()
         self.gd = dict()
+        self.automessage.start()
+        #loop = asyncio.get_event_loop()
+        #loop.run_until_complete(self.automessage())
+
 
     def ranking_message(self,guild_id):
         ranking_message = '✨今日の書き込み数ランキング✨\n'
@@ -38,7 +41,7 @@ class Basic(commands.Cog):
                     print(user_id_and_number)
                     user_id = user_id_and_number[0]
                     number = user_id_and_number[1]
-                    user = bot.get_user(user_id)
+                    user = self.bot.get_user(user_id)
 
                     # 同率の順位の場合、同率表示させるために必要
                     if prenumber == number:
@@ -54,7 +57,7 @@ class Basic(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self,msg):
         # 自身の書き込みは無視
-        if msg.author == bot.user:
+        if msg.author == self.bot.user:
             return
         # gdのkeyにguild idが既にある場合、author idをvalueのlistに追加
         elif msg.guild.id in self.gd.keys():
@@ -100,12 +103,12 @@ class Basic(commands.Cog):
 
     # 書き込み数ランキングの自動発表
     @tasks.loop(seconds=60)
-    async def loop(self):
+    async def automessage(self):
         # 現在の時刻
         now = datetime.now().strftime('%H:%M')
         if now == '12:00' or now == '23:59':
             # botが入っているguildリスト
-            guilds = [guild async for guild in bot.fetch_guilds(limit=200)]
+            guilds = [guild async for guild in self.bot.fetch_guilds(limit=200)]
             for guild in guilds:
                 ranking_message = self.ranking_message(guild.id)
                 if now == '12:00':
@@ -122,7 +125,7 @@ class Basic(commands.Cog):
                 # システムメッセージチャンネルが設定されていない場合、ランダムなテキストチャンネルに投稿            
                 elif guild.text_channels:
                     channel = random.choice(guild.text_channels)
-                    await channel.send(f'{ranking_message}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
+                    await channel.send(f'{ranking_message}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {self.bot.command_prefix}rktと書き込んで下さい。')
 
 
 class EmojiRanking(commands.Cog):
@@ -133,7 +136,9 @@ class EmojiRanking(commands.Cog):
         super().__init__()
         self.bot = bot
         self.emoji_gd = dict()
-        self.loop.start()
+        self.automessage.start()
+        #loop = asyncio.get_event_loop()
+        #loop.run_until_complete(self.automessage())
 
     def ranking_message(self,guild_id):
         ranking_message = '🌟今日の絵文字書き込み数ランキング🌟\n'
@@ -167,7 +172,7 @@ class EmojiRanking(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self,msg):
         # 自身の書き込みは無視
-        if msg.author == bot.user:
+        if msg.author == self.bot.user:
             return
 
         if re.findall(r'<:\w*:\d*>', msg.content):
@@ -190,12 +195,12 @@ class EmojiRanking(commands.Cog):
 
     # 書き込み数ランキングの自動発表
     @tasks.loop(seconds=60)
-    async def loop(self):
+    async def automessage(self):
         # 現在の時刻
         now = datetime.now().strftime('%H:%M')
         if now == '12:00' or now == '23:59':
             # botが入っているguildリスト
-            guilds = [guild async for guild in bot.fetch_guilds(limit=200)]
+            guilds = [guild async for guild in self.bot.fetch_guilds(limit=200)]
             for guild in guilds:
                 ranking_message = self.ranking_message(guild.id)
                 if now == '12:00':
@@ -212,7 +217,8 @@ class EmojiRanking(commands.Cog):
                 # システムメッセージチャンネルが設定されていない場合、ランダムなテキストチャンネルに投稿            
                 elif guild.text_channels:
                     channel = random.choice(guild.text_channels)
-                    await channel.send(f'{ranking_message}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {bot.command_prefix}rktと書き込んで下さい。')
+                    await channel.send(f'{ranking_message}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {self.bot.command_prefix}rktと書き込んで下さい。')
+
 
 class Setting(commands.Cog):
     """
@@ -252,11 +258,12 @@ class Omikuji(commands.Cog):
         '''
         おまけ機能omikuji
         '''
-        contents = ["大吉", "吉", "中吉", "小吉", "末吉", "凶", "中凶", "大凶", "末凶", "ぴょん吉", "だん吉","かん吉"]
+        contents = ( "大吉😄", "中吉😊","吉😀", "小吉🙂", "末吉🤗", "凶😢", "中凶😂", "大凶😭", "ぴょん吉", "だん吉","かん吉")
         res = random.choice(contents)
-        await ctx.send(f'>>> omikuji結果: {res} ')
-        if res == '大吉':
+        await ctx.send(f'omikuji結果: {res} ')
+        if res == '大吉😄':
             await ctx.message.add_reaction("🎉")
+        
 
 class HelpCommand(commands.HelpCommand):
     def __init__(self):
@@ -288,16 +295,18 @@ class HelpCommand(commands.HelpCommand):
 
         await self.get_destination().send(embed=embed)
 
-intents = discord.Intents.all()
-bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"),intents=intents, help_command=HelpCommand())
-bot.add_cog(Basic(bot))
-bot.add_cog(Setting(bot))
-bot.add_cog(Omikuji(bot))
-bot.add_cog(EmojiRanking(bot))
+async def setup():
+    intents = discord.Intents.all()
+    bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"),intents=intents, help_command=HelpCommand())
+    await bot.add_cog(Basic(bot))
+    await bot.add_cog(Setting(bot))
+    await bot.add_cog(Omikuji(bot))
+    await bot.add_cog(EmojiRanking(bot))
 
-@bot.event
-async def on_ready():
-    print(f'🟠ログインしました🟠{len(bot.guilds)}ギルドにログイン')
+    @bot.event
+    async def on_ready():
+        print(f'🟠ログインしました🟠{len(bot.guilds)}ギルドにログイン')
+    await bot.start(token='token')
 
 # 実行
-bot.run( 'TOKEN')
+asyncio.run(setup())
