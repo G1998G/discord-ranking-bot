@@ -113,7 +113,7 @@ class Basic(commands.Cog):
                 ranking_message = self.ranking_message(guild.id)
                 if now == '12:00':
                     ranking_message = '*🔻中間発表🔻* \n' + ranking_message
-                elif now == '23;59':
+                elif now == '23:59':
                     del self.gd[guild.id]
                 # 自動投稿先が設定されている場合
                 if guild in ranking_message_channel_dict:
