@@ -90,7 +90,7 @@ class Basic(commands.Cog):
                         ranking_count -= 1
                     if user_id == ctx.author.id:
                         break
-                await ctx.channel.send(f'{ranking_count}位: {ctx.author.nick or ctx.author.name} (書き込み数::{message_count}) ')
+                await ctx.channel.send(f'{ranking_count}位: {ctx.author.nick or ctx.author.name} (書き込み数: {message_count}) ')
         else:
             await ctx.send('>>> 書き込み0もしくはコマンドのみ書き込み')
 
@@ -224,7 +224,7 @@ class EmojiRanking(commands.Cog):
                 elif guild.text_channels:
                     channel = random.choice(guild.text_channels)
                     await channel.send(f'{ranking_message}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {self.bot.command_prefix}rktと書き込んで下さい。')
-
+                    
 class Setting(commands.Cog):
     """
     設定用
