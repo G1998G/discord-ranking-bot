@@ -229,6 +229,17 @@ class Setting(commands.Cog):
         super().__init__()
         self.bot = bot
 
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        print(f'🟠ログインギルドが増えました🟠{len(self.bot.guilds)}ギルドにログイン')
+    @commands.Cog.listener()
+    async def on_guild_remove(self,guild):
+        print(f'🟠ログインギルドが減りました🟠{len(self.bot.guilds)}ギルドにログイン') 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        print(f'🟠ログインしました🟠{len(self.bot.guilds)}ギルドにログイン')
+
+
     @commands.command()
     async def rks(self,ctx,*arg):
         '''
@@ -302,10 +313,6 @@ async def setup(bot):
     await bot.add_cog(Setting(bot))
     await bot.add_cog(Omikuji(bot))
     await bot.add_cog(EmojiRanking(bot))
-
-    @bot.event
-    async def on_ready():
-        print(f'🟠ログインしました🟠{len(bot.guilds)}ギルドにログイン')
     await bot.start(token='TOKEN')
 
 # 実行
