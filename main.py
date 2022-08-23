@@ -19,8 +19,6 @@ class Basic(commands.Cog):
         self.bot = bot
         self.gd = dict()
         self.automessage.start()
-        #loop = asyncio.get_event_loop()
-        #loop.run_until_complete(self.automessage())
 
 
     def ranking_message(self,guild_id):
@@ -140,8 +138,6 @@ class EmojiRanking(commands.Cog):
         self.bot = bot
         self.emoji_gd = dict()
         self.automessage.start()
-        #loop = asyncio.get_event_loop()
-        #loop.run_until_complete(self.automessage())
 
     def ranking_message(self,guild_id):
         ranking_message = ''
@@ -195,7 +191,7 @@ class EmojiRanking(commands.Cog):
         ※書き込まれた後削除されてしまった絵文字は表示されません。
         '''
         ranking_message = self.ranking_message(ctx.guild.id)
-        ranking_message = '✨今日の絵文字書き込み数ランキング✨ \n' + ranking_message
+        ranking_message = '✨今日の絵文字ランキング✨ \n' + ranking_message
         await ctx.channel.send(f'{ranking_message}')  
 
     # 書き込み数ランキングの自動発表
@@ -211,7 +207,7 @@ class EmojiRanking(commands.Cog):
                 if now == '12:00':
                     ranking_message = '✨中間発表✨ \n' + ranking_message
                 elif now == '23:59':
-                    ranking_message = '✨今日の書き込み数ランキング✨ \n' + ranking_message
+                    ranking_message = '✨今日の絵文字ランキング✨ \n' + ranking_message
                     del self.emoji_gd[guild.id]
                 # 自動投稿先が設定されている場合
                 if guild in ranking_message_channel_dict:
@@ -224,32 +220,6 @@ class EmojiRanking(commands.Cog):
                 elif guild.text_channels:
                     channel = random.choice(guild.text_channels)
                     await channel.send(f'{ranking_message}\n >>> 現在、1日の集計を送信する指定チャンネルがないので、ランダムなチャンネルに送付しています。\n 指定するにはチャンネルで {self.bot.command_prefix}rktと書き込んで下さい。')
-                    
-class Setting(commands.Cog):
-    """
-    設定用
-    """
-    def __init__(self, bot):
-        super().__init__()
-        self.bot = bot
-
-    @commands.command()
-    async def rks(self,ctx,*arg):
-        '''
-        1日の書き込み数ランキング自動投稿先を設定する
-        '''
-        ranking_message_channel_dict[ctx.guild] = ctx.channel
-        await ctx.send(f'>>> 設定: \n自動投稿の1日のランキング集計はこのチャンネルに投稿されます')
-
-    @commands.command()
-    async def profile(self,ctx,*args):
-        '''
-        bot作成者の紹介
-        '''
-        embed= discord.Embed(title="**bot作成者**", description=f"趣味でbot等を作っています。\n [GitHubプロフィールページ](https://github.com/G1998G)")
-        embed.set_thumbnail(url="https://avatars.githubusercontent.com/u/60283066?s=400&v=4")
-        await ctx.send(embed=embed)
-
 
 class Setting(commands.Cog):
     """
@@ -294,6 +264,7 @@ class Omikuji(commands.Cog):
         await ctx.send(f'omikuji結果: {res} ')
         if res == '大吉😄':
             await ctx.message.add_reaction("🎉")
+
         
 
 class HelpCommand(commands.HelpCommand):
@@ -326,9 +297,7 @@ class HelpCommand(commands.HelpCommand):
 
         await self.get_destination().send(embed=embed)
 
-async def setup():
-    intents = discord.Intents.all()
-    bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"),intents=intents, help_command=HelpCommand())
+async def setup(bot):
     await bot.add_cog(Basic(bot))
     await bot.add_cog(Setting(bot))
     await bot.add_cog(Omikuji(bot))
@@ -337,7 +306,9 @@ async def setup():
     @bot.event
     async def on_ready():
         print(f'🟠ログインしました🟠{len(bot.guilds)}ギルドにログイン')
-    await bot.start(token='token')
+    await bot.start(token='TOKEN')
 
 # 実行
-asyncio.run(setup())
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"),intents=intents, help_command=HelpCommand())
+asyncio.run(setup(bot))
