@@ -166,7 +166,7 @@ class EmojiRanking(commands.Cog):
             ranking_message += f'総書き込み絵文字数:{len(set( self.emoji_gd[guild_id] ) )}・総書き込み数：{len(self.emoji_gd[guild_id])}'
             return ranking_message
         else:
-            return f'{ranking_message}書き込み数計測不能(もしくは書き込み無し)'
+            return '書き込み数計測不能(もしくは書き込み無し)'
 
     @commands.Cog.listener()
     async def on_message(self,msg):
