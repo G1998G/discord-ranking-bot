@@ -108,8 +108,8 @@ class Basic(commands.Cog):
         now = datetime.now().strftime('%H:%M')
         if now == '12:00' or now == '23:59':
             # botが入っているguildリスト
-            guilds = [guild async for guild in self.bot.fetch_guilds(limit=200)]
-            for guild in guilds:
+            #guilds = [guild async for guild in self.bot.fetch_guilds(limit=200)]
+            for guild in self.bot.guilds:
                 ranking_message = self.ranking_message(guild.id)
                 if now == '12:00':
                     ranking_message = '✨中間発表✨ \n' + ranking_message
@@ -201,8 +201,8 @@ class EmojiRanking(commands.Cog):
         now = datetime.now().strftime('%H:%M')
         if now == '12:00' or now == '23:59':
             # botが入っているguildリスト
-            guilds = [guild async for guild in self.bot.fetch_guilds(limit=200)]
-            for guild in guilds:
+            #guilds = [guild async for guild in self.bot.fetch_guilds(limit=200)]
+            for guild in self.bot.guilds:
                 ranking_message = self.ranking_message(guild.id)
                 if now == '12:00':
                     ranking_message = '✨中間発表✨ \n' + ranking_message
