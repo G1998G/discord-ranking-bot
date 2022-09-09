@@ -24,6 +24,7 @@ class Basic(commands.Cog):
     def ranking_message(self,guild_id):
         ranking_message = ''
         if guild_id in self.gd:
+            guild = self.bot.get_guild(guild_id)
             c = collections.Counter(self.gd[guild_id]).most_common()
 
             ranking_count = 0
@@ -39,15 +40,17 @@ class Basic(commands.Cog):
                     print(user_id_and_number)
                     user_id = user_id_and_number[0]
                     number = user_id_and_number[1]
-                    user = self.bot.get_user(user_id)
+
+                    member = guild.get_member(user_id)
+                    print(member)
 
                     # 同率の順位の場合、同率表示させるために必要
                     if prenumber == number:
                         ranking_count -= 1
                     prenumber = number
-                    ranking_message += f'{ranking_count}位:{user.display_name} (書き込み数：{number})\n'
+                    ranking_message += f'{ranking_count}位：{member.nick}　(書き込み数：{number})\n'
 
-            ranking_message += f'総書き込みユーザー数:{len(set( self.gd[guild_id] ) )} 総書き込み数：{len(self.gd[guild_id])}'
+            ranking_message += f'総書き込みユーザー数：{len(set( self.gd[guild_id] ) )} 総書き込み数：{len(self.gd[guild_id])}'
             return ranking_message
         else:
             return f'{ranking_message}書き込み数計測不能(もしくは書き込み無し)'
@@ -88,7 +91,7 @@ class Basic(commands.Cog):
                         ranking_count -= 1
                     if user_id == ctx.author.id:
                         break
-                await ctx.channel.send(f'{ranking_count}位: {ctx.author.nick or ctx.author.name} (書き込み数: {message_count}) ')
+                await ctx.channel.send(f'{ranking_count}位：{ctx.author.nick or ctx.author.name}　(書き込み数：{message_count}) ')
         else:
             await ctx.send('>>> 書き込み0もしくはコマンドのみ書き込み')
 
@@ -161,12 +164,12 @@ class EmojiRanking(commands.Cog):
                     if prenumber == number:
                         ranking_count -= 1
                     prenumber = number
-                    ranking_message += f'{ranking_count}位:{emoji} (書き込み数：{number})\n'
+                    ranking_message += f'{ranking_count}位：{emoji}　(書き込み数：{number})\n'
 
-            ranking_message += f'総書き込み絵文字数:{len(set( self.emoji_gd[guild_id] ) )}・総書き込み数：{len(self.emoji_gd[guild_id])}'
+            ranking_message += f'総書き込み絵文字数：{len(set( self.emoji_gd[guild_id] ) )}・総書き込み数：{len(self.emoji_gd[guild_id])}'
             return ranking_message
         else:
-            return '書き込み数計測不能(もしくは書き込み無し)'
+            return f'{ranking_message}書き込み数計測不能(もしくは書き込み無し)'
 
     @commands.Cog.listener()
     async def on_message(self,msg):
@@ -228,17 +231,6 @@ class Setting(commands.Cog):
     def __init__(self, bot):
         super().__init__()
         self.bot = bot
-
-    @commands.Cog.listener()
-    async def on_guild_join(self, guild):
-        print(f'🟠ログインギルドが増えました🟠{len(self.bot.guilds)}ギルドにログイン')
-    @commands.Cog.listener()
-    async def on_guild_remove(self,guild):
-        print(f'🟠ログインギルドが減りました🟠{len(self.bot.guilds)}ギルドにログイン') 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f'🟠ログインしました🟠{len(self.bot.guilds)}ギルドにログイン')
-
 
     @commands.command()
     async def rks(self,ctx,*arg):
